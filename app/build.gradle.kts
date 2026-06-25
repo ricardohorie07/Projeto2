@@ -42,4 +42,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+    // Retrofit (chamadas HTTP) + conversor Gson (JSON -> objeto Kotlin)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    // Coroutines (rodar a rede fora da thread principal)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+    // lifecycleScope (pra lançar a coroutine na Activity)
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
 }
