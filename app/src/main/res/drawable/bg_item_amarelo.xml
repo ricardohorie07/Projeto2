@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fundo do card amarelo: cantos arredondados + borda escura,
+     parecido com o retângulo amarelo da imagem. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/amarelo_item" />
+    <corners android:radius="8dp" />
+    <stroke
+        android:width="2dp"
+        android:color="#B8860B" />
+</shape>

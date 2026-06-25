@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Tela principal: barra de título (verde) + RecyclerView (área azul).
+    A RecyclerView é só o "contêiner" que mostra a lista; quem desenha
+    cada item amarelo é o item_serie.xml através do Adapter.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Barra de título (o "Titulo" verde da imagem) -->
+    <TextView
+        android:id="@+id/tvTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/verde_titulo"
+        android:padding="16dp"
+        android:text="Título"
+        android:textColor="@android:color/black"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <!-- RecyclerView: a área azul que lista os itens.
+         layout_height="0dp" + layout_weight="1" faz ela ocupar
+         todo o espaço restante abaixo do título. -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSeries"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/azul_lista"
+        android:clipToPadding="false"
+        android:padding="12dp" />
+
+</LinearLayout>
