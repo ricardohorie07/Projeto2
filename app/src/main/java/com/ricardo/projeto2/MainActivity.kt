@@ -1,23 +1,30 @@
 package com.ricardo.projeto2
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 
 /**
- * Agora a MainActivity busca os dados da API em vez de usar uma lista fixa.
- *
- * Fluxo:
- *   1) monta a RecyclerView (igual antes)
- *   2) dentro de lifecycleScope.launch { } chama a API (em background)
- *   3) quando os dados chegam, joga no mesmo SerieAdapter de sempre
+ * View (MVVM): a Activity ficou "burra" de propósito.
+ * Ela NÃO busca dados nem trata erro — só:
+ *   1) pega o ViewModel
+ *   2) observa o estado (uiState)
+ *   3) reage a cada estado (mostra lista, mostra erro, etc.)
+ *   4) navega quando um item é clicado
  */
 class MainActivity : AppCompatActivity() {
+
+    // Cria/recupera o ViewModel. O 'by viewModels()' garante que, ao girar a
+    // tela, é o MESMO ViewModel (com os dados já carregados) que volta.
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,29 +33,40 @@ class MainActivity : AppCompatActivity() {
         val rvSeries = findViewById<RecyclerView>(R.id.rvSeries)
         rvSeries.layoutManager = LinearLayoutManager(this)
 
-        // Busca os episódios e atualiza a tela
-        buscarEpisodios(rvSeries)
+        observarEstado(rvSeries)
     }
 
-    private fun buscarEpisodios(rvSeries: RecyclerView) {
-        // lifecycleScope: a coroutine vive junto com a Activity (some se a tela fechar).
+    private fun observarEstado(rvSeries: RecyclerView) {
+        // repeatOnLifecycle: só observa enquanto a tela está visível (boa prática,
+        // evita trabalho e vazamento quando o app vai pro background).
         lifecycleScope.launch {
-            try {
-                // Chamada de rede. Como é 'suspend', ela espera sem travar a tela.
-                val episodios = RetrofitClient.api.getEpisodios("4,7,13,21")
-
-                // Chegou a resposta -> liga no Adapter
-                rvSeries.adapter = SerieAdapter(episodios)
-
-            } catch (e: Exception) {
-                // Deu erro (sem internet, API fora do ar, etc.)
-                Log.e("MainActivity", "Erro ao buscar episódios", e)
-                Toast.makeText(
-                    this@MainActivity,
-                    "Erro ao carregar dados: ${e.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { estado ->
+                    when (estado) {
+                        is SeriesUiState.Loading -> {
+                            // Aqui poderia aparecer um spinner de carregamento.
+                        }
+                        is SeriesUiState.Success -> {
+                            rvSeries.adapter = SerieAdapter(estado.series) { serie ->
+                                abrirDetalhe(serie)
+                            }
+                        }
+                        is SeriesUiState.Error -> {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Erro: ${estado.mensagem}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private fun abrirDetalhe(serie: Serie) {
+        val intent = Intent(this, DetalheActivity::class.java)
+        intent.putExtra("nome_serie", serie.nome)
+        startActivity(intent)
     }
 }
