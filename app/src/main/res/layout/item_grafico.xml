@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Item da lista que contém o gráfico (o "header").
+    É um card com o CombinedChart dentro, igual ao que estava fixo,
+    mas agora é UM item da RecyclerView.
+-->
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp">
+
+    <com.github.mikephil.charting.charts.CombinedChart
+        android:id="@+id/combinedChartItem"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:padding="8dp" />
+
+</androidx.cardview.widget.CardView>

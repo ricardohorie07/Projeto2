@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Tela de detalhe: por enquanto só um título centralizado.
-    O FrameLayout serve de "moldura" para centralizar o TextView com layout_gravity.
+    Tela de detalhe: título + gráfico combinado (barras + linha).
+    Agora usamos CombinedChart, que suporta vários tipos de dado juntos.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="56dp"
+    android:paddingBottom="24dp">
 
     <TextView
         android:id="@+id/tvTituloDetalhe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal"
         android:text="Detalhes"
         android:textColor="@android:color/black"
         android:textSize="28sp"
         android:textStyle="bold" />
 
-</FrameLayout>
+    <com.github.mikephil.charting.charts.CombinedChart
+        android:id="@+id/combinedChart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="24dp" />
+
+</LinearLayout>

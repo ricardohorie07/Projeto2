@@ -13,17 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 
 /**
- * View (MVVM): a Activity ficou "burra" de propósito.
- * Ela NÃO busca dados nem trata erro — só:
- *   1) pega o ViewModel
- *   2) observa o estado (uiState)
- *   3) reage a cada estado (mostra lista, mostra erro, etc.)
- *   4) navega quando um item é clicado
+ * A MainActivity voltou a ser simples: o gráfico agora é responsabilidade do
+ * Adapter (é o primeiro item da lista). Aqui só observamos o ViewModel e
+ * entregamos os dados ao Adapter.
  */
 class MainActivity : AppCompatActivity() {
 
-    // Cria/recupera o ViewModel. O 'by viewModels()' garante que, ao girar a
-    // tela, é o MESMO ViewModel (com os dados já carregados) que volta.
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,15 +32,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observarEstado(rvSeries: RecyclerView) {
-        // repeatOnLifecycle: só observa enquanto a tela está visível (boa prática,
-        // evita trabalho e vazamento quando o app vai pro background).
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { estado ->
                     when (estado) {
-                        is SeriesUiState.Loading -> {
-                            // Aqui poderia aparecer um spinner de carregamento.
-                        }
+                        is SeriesUiState.Loading -> { }
                         is SeriesUiState.Success -> {
                             rvSeries.adapter = SerieAdapter(estado.series) { serie ->
                                 abrirDetalhe(serie)
